@@ -6,17 +6,37 @@
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
       rel="stylesheet"
     >
+    <link rel="stylesheet" href="style.css">
   </head>
   <body class="bg-light">
     <div class="container mt-5">
       <div class="card shadow">
+        <div class="card-header bg-white d-flex align-items-center justify-content-between">
+          <h4 class="mb-0">Dashboard</h4>
+          <button class="btn btn-outline-danger" onclick="logout()">Logout</button>
+        </div>
         <div class="card-body">
-          <h4 class="mb-2">Dashboard</h4>
-          <p id="welcome" class="mb-3"></p>
+          <div class="d-flex align-items-center gap-3 mb-3">
+            <div class="position-relative">
+              <img
+                id="profileImage"
+                src=""
+                alt="Profile"
+                class="rounded-circle border"
+                style="width:56px; height:56px; object-fit:cover; display:none;"
+              >
+            </div>
+            <div>
+              <div id="welcome" class="fw-semibold"></div>
+              <div id="welcomeRole" class="text-muted small"></div>
+            </div>
+          </div>
+
           <div class="d-flex flex-wrap align-items-center gap-2">
-            <div id="adminMenu" class="d-flex gap-2"></div>
-            <a href="files.html" class="btn btn-success">File Managent</a>
-            <button class="btn btn-danger" onclick="logout()">Logout</button>
+            <div id="mainMenu" class="d-flex flex-wrap gap-2">
+              <a href="files.html" class="btn btn-success">File Management</a>
+            </div>
+            <div id="adminMenu" class="d-flex flex-wrap gap-2"></div>
           </div>
         </div>
       </div>
@@ -28,8 +48,16 @@
       if (!user) {
         window.location.href = "login.html";
       } else {
-        document.getElementById("welcome").innerText =
-          "Welcome, " + user.username + " (" + user.role + ")";
+        document.getElementById("welcome").innerHTML =
+          `<a href="profile.html" class="fw-semibold text-decoration-none">` +
+          `${user.name || user.username}</a>`;
+        document.getElementById("welcomeRole").innerText = user.role || "";
+
+        const profileImage = document.getElementById("profileImage");
+        if (user.photoData) {
+          profileImage.src = user.photoData;
+          profileImage.style.display = "block";
+        }
 
         if (user.role === "admin") {
           document.getElementById("adminMenu").innerHTML = `
@@ -53,7 +81,7 @@
         const user = JSON.parse(storedUser);
 
         // Tunggu log selesai
-        await addLog("LGT", "Logout", user.username);
+        await addLog("LGT", "Logout", user.username, user.id, `${user.username}(${user.role})`);
 
         localStorage.removeItem("user");
 
@@ -63,7 +91,7 @@
       // ===============================
       // ADD LOG FUNCTION
       // ===============================
-      async function addLog(prefix, action, username) {
+      async function addLog(prefix, action, username, targetId = "-", targetName = "-") {
         const now = new Date();
 
         const day = String(now.getDate()).padStart(2, "0");
@@ -91,6 +119,8 @@
             id: newId,
             username: username,
             action: action,
+            targetId: targetId,
+            targetName: targetName,
             date: now.toLocaleString()
           })
         });
