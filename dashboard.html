@@ -8,35 +8,68 @@
     >
     <link rel="stylesheet" href="style.css">
   </head>
-  <body class="bg-light">
-    <div class="container mt-5">
-      <div class="card shadow">
-        <div class="card-header bg-white d-flex align-items-center justify-content-between">
-          <h4 class="mb-0">Dashboard</h4>
-          <button class="btn btn-outline-danger" onclick="logout()">Logout</button>
+  <body class="bg-light dashboard-page">
+    <div class="container py-5">
+      <div class="dashboard-hero mb-4">
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+          <div>
+            <div class="dashboard-label">Mini DMS</div>
+            <h3 class="mb-2">Dashboard</h3>
+            <div class="text-white-50 small" id="todayLabel"></div>
+            <div class="text-white-50 small">Update Dashboard v0.001</div>
+          </div>
+          <button class="btn btn-light" onclick="logout()">Logout</button>
         </div>
+      </div>
+
+      <div class="card shadow dashboard-card">
         <div class="card-body">
-          <div class="d-flex align-items-center gap-3 mb-3">
-            <div class="position-relative">
-              <img
-                id="profileImage"
-                src=""
-                alt="Profile"
-                class="rounded-circle border"
-                style="width:56px; height:56px; object-fit:cover; display:none;"
-              >
-            </div>
+          <div class="d-flex align-items-center gap-3 mb-4">
+            <img
+              id="profileImage"
+              src=""
+              alt="Profile"
+              class="rounded-circle border dashboard-avatar"
+              style="display:none;"
+            >
             <div>
-              <div id="welcome" class="fw-semibold"></div>
+              <div id="welcome" class="fw-semibold fs-5"></div>
               <div id="welcomeRole" class="text-muted small"></div>
             </div>
           </div>
 
-          <div class="d-flex flex-wrap align-items-center gap-2">
-            <div id="mainMenu" class="d-flex flex-wrap gap-2">
-              <a href="files.html" class="btn btn-success">File Management</a>
+          <div class="row g-3 mb-4">
+            <div class="col-md-4">
+              <div class="dashboard-stat">
+                <div class="dashboard-stat-label">Status</div>
+                <div class="dashboard-stat-value">Aktif</div>
+              </div>
             </div>
-            <div id="adminMenu" class="d-flex flex-wrap gap-2"></div>
+            <div class="col-md-4">
+              <div class="dashboard-stat">
+                <div class="dashboard-stat-label">Akses</div>
+                <div class="dashboard-stat-value" id="roleBadge">User</div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="dashboard-stat">
+                <div class="dashboard-stat-label">Environment</div>
+                <div class="dashboard-stat-value">Web Testing</div>
+              </div>
+            </div>
+          </div>
+
+          <h6 class="mb-3">Menu Utama</h6>
+          <div class="dashboard-menu" id="mainMenu">
+            <a href="files.html" class="dashboard-menu-item">
+              <div class="dashboard-menu-title">File Management</div>
+              <div class="dashboard-menu-desc">Kelola file dokumen</div>
+            </a>
+          </div>
+
+          <div id="adminSection" class="mt-4 d-none">
+            <h6 class="mb-3">Menu Admin</h6>
+            <div id="adminMenu" class="dashboard-menu"></div>
           </div>
         </div>
       </div>
@@ -52,6 +85,7 @@
           `<a href="profile.html" class="fw-semibold text-decoration-none">` +
           `${user.name || user.username}</a>`;
         document.getElementById("welcomeRole").innerText = user.role || "";
+        document.getElementById("roleBadge").innerText = user.role || "user";
 
         const profileImage = document.getElementById("profileImage");
         if (user.photoData) {
@@ -60,12 +94,28 @@
         }
 
         if (user.role === "admin") {
+          document.getElementById("adminSection").classList.remove("d-none");
           document.getElementById("adminMenu").innerHTML = `
-            <a href="admin.html" class="btn btn-primary">User Management</a>
-            <a href="logs.html" class="btn btn-warning">Log Activity</a>
+            <a href="admin.html" class="dashboard-menu-item">
+              <div class="dashboard-menu-title">User Management</div>
+              <div class="dashboard-menu-desc">Kelola akun pengguna</div>
+            </a>
+            <a href="logs.html" class="dashboard-menu-item">
+              <div class="dashboard-menu-title">Log Activity</div>
+              <div class="dashboard-menu-desc">Monitor aktivitas sistem</div>
+            </a>
           `;
         }
       }
+
+      const now = new Date();
+      document.getElementById("todayLabel").innerText =
+        now.toLocaleDateString("id-ID", {
+          weekday: "long",
+          day: "2-digit",
+          month: "long",
+          year: "numeric"
+        });
 
       // ===============================
       // LOGOUT FUNCTION
