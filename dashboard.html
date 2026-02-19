@@ -13,10 +13,8 @@
       <div class="dashboard-hero mb-4">
         <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
           <div>
-            <div class="dashboard-label">Mini DMS</div>
             <h3 class="mb-2">Dashboard</h3>
             <div class="text-white-50 small" id="todayLabel"></div>
-            <div class="text-white-50 small">Update Dashboard v0.001</div>
           </div>
           <button class="btn btn-light" onclick="logout()">Logout</button>
         </div>
@@ -30,7 +28,6 @@
               src=""
               alt="Profile"
               class="rounded-circle border dashboard-avatar"
-              style="display:none;"
             >
             <div>
               <div id="welcome" class="fw-semibold fs-5"></div>
@@ -88,10 +85,15 @@
         document.getElementById("roleBadge").innerText = user.role || "user";
 
         const profileImage = document.getElementById("profileImage");
-        if (user.photoData) {
-          profileImage.src = user.photoData;
-          profileImage.style.display = "block";
-        }
+        const displayName = user.name || user.username || "User";
+        const initial = displayName.charAt(0).toUpperCase();
+        const defaultAvatarSvg =
+          `<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96">` +
+          `<rect width="100%" height="100%" fill="#dbeafe"/>` +
+          `<text x="50%" y="54%" font-size="40" text-anchor="middle" fill="#1e3a8a" font-family="Arial">` +
+          `${initial}</text></svg>`;
+        const defaultAvatar = `data:image/svg+xml;utf8,${encodeURIComponent(defaultAvatarSvg)}`;
+        profileImage.src = user.photoData || defaultAvatar;
 
         if (user.role === "admin") {
           document.getElementById("adminSection").classList.remove("d-none");
