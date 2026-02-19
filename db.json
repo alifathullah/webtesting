@@ -1,0 +1,200 @@
+{
+  "users": [
+    {
+      "id": "UID-001",
+      "username": "admin",
+      "password": "admin123",
+      "role": "admin"
+    },
+    {
+      "id": "UID-002",
+      "username": "ali",
+      "password": "alialiali",
+      "role": "user"
+    },
+    {
+      "id": "UID-003",
+      "username": "ara",
+      "password": "araaraara",
+      "role": "user"
+    },
+    {
+      "id": "UID-004",
+      "username": "test",
+      "password": "testingan",
+      "role": "user"
+    }
+  ],
+  "files": [
+    {
+      "id": "FU-110226-001",
+      "name": "satu",
+      "owner": "admin",
+      "date": "11/02/2026, 23.45.32"
+    },
+    {
+      "id": "FU-110226-002",
+      "name": "dua",
+      "owner": "admin",
+      "date": "11/02/2026, 23.46.20"
+    },
+    {
+      "id": "FU-110226-004",
+      "name": "empat",
+      "owner": "ali",
+      "date": "11/02/2026, 23.46.59"
+    },
+    {
+      "id": "FU-110226-005",
+      "name": "tiga",
+      "owner": "admin",
+      "date": "11/02/2026, 23.49.37"
+    }
+  ],
+  "logs": [
+    {
+      "id": "LGT-110226-001",
+      "username": "admin",
+      "action": "Logout",
+      "date": "11/02/2026, 23.44.42"
+    },
+    {
+      "id": "LGN-110226-001",
+      "username": "ali",
+      "action": "Login",
+      "date": "11/02/2026, 23.44.54"
+    },
+    {
+      "id": "LGT-110226-002",
+      "username": "ali",
+      "action": "Logout",
+      "date": "11/02/2026, 23.44.56"
+    },
+    {
+      "id": "LGN-110226-002",
+      "username": "admin",
+      "action": "Login",
+      "date": "11/02/2026, 23.45.03"
+    },
+    {
+      "id": "FM-110226-001",
+      "username": "admin",
+      "action": "Upload File",
+      "targetId": "FU-110226-001",
+      "targetName": "satu",
+      "date": "11/02/2026, 23.45.32"
+    },
+    {
+      "id": "FM-110226-002",
+      "username": "admin",
+      "action": "Upload File",
+      "targetId": "FU-110226-002",
+      "targetName": "dua",
+      "date": "11/02/2026, 23.46.20"
+    },
+    {
+      "id": "LGT-110226-003",
+      "username": "admin",
+      "action": "Logout",
+      "date": "11/02/2026, 23.46.37"
+    },
+    {
+      "id": "LGN-110226-003",
+      "username": "ali",
+      "action": "Login",
+      "date": "11/02/2026, 23.46.44"
+    },
+    {
+      "id": "FM-110226-003",
+      "username": "ali",
+      "action": "Upload File",
+      "targetId": "FU-110226-003",
+      "targetName": "tiga",
+      "date": "11/02/2026, 23.46.53"
+    },
+    {
+      "id": "FM-110226-004",
+      "username": "ali",
+      "action": "Upload File",
+      "targetId": "FU-110226-004",
+      "targetName": "empat",
+      "date": "11/02/2026, 23.46.59"
+    },
+    {
+      "id": "LGT-110226-004",
+      "username": "ali",
+      "action": "Logout",
+      "date": "11/02/2026, 23.47.03"
+    },
+    {
+      "id": "LGN-110226-004",
+      "username": "admin",
+      "action": "Login",
+      "date": "11/02/2026, 23.48.53"
+    },
+    {
+      "id": "FM-110226-005",
+      "username": "admin",
+      "action": "Delete File",
+      "targetId": "FU-110226-003",
+      "targetName": "tiga",
+      "date": "11/02/2026, 23.49.31"
+    },
+    {
+      "id": "FM-110226-006",
+      "username": "admin",
+      "action": "Upload File",
+      "targetId": "FU-110226-005",
+      "targetName": "tiga",
+      "date": "11/02/2026, 23.49.37"
+    },
+    {
+      "id": "LGT-110226-005",
+      "username": "admin",
+      "action": "Logout",
+      "date": "11/02/2026, 23.51.21"
+    },
+    {
+      "id": "LGN-110226-005",
+      "username": "ara",
+      "action": "Login",
+      "date": "11/02/2026, 23.51.52"
+    },
+    {
+      "id": "LGT-110226-006",
+      "username": "ara",
+      "action": "Logout",
+      "date": "11/02/2026, 23.51.55"
+    },
+    {
+      "id": "LGN-110226-006",
+      "username": "admin",
+      "action": "Login",
+      "date": "11/02/2026, 23.52.05"
+    },
+    {
+      "id": "LGT-120226-001",
+      "username": "admin",
+      "action": "Logout",
+      "date": "12/02/2026, 00.01.26"
+    },
+    {
+      "id": "LGN-120226-001",
+      "username": "admin",
+      "action": "Login",
+      "date": "12/02/2026, 00.01.48"
+    },
+    {
+      "id": "LGT-120226-002",
+      "username": "admin",
+      "action": "Logout",
+      "date": "12/02/2026, 00.04.29"
+    },
+    {
+      "id": "LGN-120226-002",
+      "username": "admin",
+      "action": "Login",
+      "date": "12/02/2026, 00.04.50"
+    }
+  ]
+}
