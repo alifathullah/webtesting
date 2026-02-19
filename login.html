@@ -8,34 +8,42 @@
     >
     <link rel="stylesheet" href="style.css">
   </head>
-  <body class="bg-light">
-    <div class="container mt-5">
+  <body class="login-page">
+    <div class="container login-wrap">
       <div class="row justify-content-center">
-        <div class="col-md-4">
-          <div class="card shadow">
-            <div class="card-body">
-              <h4 class="text-center mb-1 login-title">Selamat Datang</h4>
-              <p class="text-center mb-4">
-                <span class="login-badge">Ini Web Testing</span>
-              </p>
-
-              <div class="mb-3">
-                <label>Username</label>
-                <input type="text" id="username" class="form-control">
+        <div class="col-12 col-lg-9">
+          <div class="card shadow login-card">
+            <div class="row g-0 login-shell">
+              <div class="col-lg-6 login-showcase">
+                <span class="login-badge">Mini DMS</span>
+                <h3 class="mb-2 login-title">Portal Dokumen</h3>
+                <p class="mb-4 login-subtitle">Kelola file, pengguna, dan aktivitas dalam satu dashboard.</p>
               </div>
 
-              <div class="mb-3">
-                <label>Password</label>
-                <input type="password" id="password" class="form-control">
-              </div>
+              <div class="col-lg-6">
+                <div class="card-body login-form-pane">
+                  <h4 class="mb-1">Masuk Akun</h4>
+                  <p class="text-muted mb-4">Gunakan username dan password yang terdaftar.</p>
 
-              <div id="error" class="text-danger mb-3"></div>
+                  <div class="mb-3">
+                    <label for="username" class="login-label">Username</label>
+                    <input type="text" id="username" class="form-control login-input" placeholder="Masukkan username">
+                  </div>
 
-              <button class="btn btn-primary w-100" onclick="login()">
-                Login
-              </button>
-              <div class="text-center mt-3">
-                <a href="register.html">Belum punya akun? Register</a>
+                  <div class="mb-3">
+                    <label for="password" class="login-label">Password</label>
+                    <input type="password" id="password" class="form-control login-input" placeholder="Masukkan password">
+                  </div>
+
+                  <div id="error" class="text-danger mb-3 small"></div>
+
+                  <button class="btn btn-primary w-100 login-btn" onclick="login()">
+                    Login
+                  </button>
+                  <div class="text-center mt-3 login-register">
+                    <a href="register.html">Belum punya akun? Register</a>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -111,3 +119,5 @@
     </script>
   </body>
 </html>
+
+

@@ -14,14 +14,14 @@
     <style>
     </style>
   </head>
-  <body class="bg-light">
-    <div class="container mt-5">
-      <div class="card shadow">
-        <div class="card-header bg-white d-flex align-items-center justify-content-between">
+  <body class="app-page logs-page">
+    <div class="container app-wrap">
+      <div class="card shadow app-card">
+        <div class="card-header app-card-header d-flex align-items-center justify-content-between">
           <div class="d-flex align-items-center">
             <a
               href="dashboard.html"
-              class="text-dark me-2"
+              class="text-white me-2"
               style="text-decoration:none; font-size:20px;"
             >
               <i class="bi bi-arrow-left"></i>
@@ -32,8 +32,8 @@
         <div class="card-body">
           <div id="message" class="alert d-none mb-3" role="alert"></div>
 
-          <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
-            <div class="position-relative">
+          <div class="d-flex flex-wrap align-items-center gap-2 mb-3 toolbar-row toolbar-group">
+            <div class="position-relative search-control">
               <input
                 type="text"
                 id="searchLog"
@@ -61,7 +61,7 @@
           </div>
 
           <div class="table-responsive">
-            <table class="table align-middle mt-3">
+            <table class="table align-middle">
               <thead class="table-header">
               <tr>
                 <th>Log ID</th>
@@ -77,7 +77,7 @@
             </table>
           </div>
 
-          <div class="d-flex align-items-center justify-content-between">
+          <div class="d-flex align-items-center justify-content-between pager-row">
             <div>
               <button class="btn btn-outline-secondary btn-sm" onclick="prevPage()">
                 Prev
@@ -218,13 +218,13 @@
             pageItems.forEach(l => {
               table.innerHTML += `
                 <tr>
-                  <td>${l.id}</td>
-                  <td>${l.username}</td>
-                  <td>${l.action}</td>
-                  <td>${l.targetId || "-"}</td>
-                  <td>${l.targetName || "-"}</td>
-                  <td>${l.date}</td>
-                  <td>
+                  <td data-label="Log ID">${l.id}</td>
+                  <td data-label="User">${l.username}</td>
+                  <td data-label="Action">${l.action}</td>
+                  <td data-label="Target ID">${l.targetId || "-"}</td>
+                  <td data-label="Target Name">${l.targetName || "-"}</td>
+                  <td data-label="Date">${l.date}</td>
+                  <td data-label="Action" class="action-cell">
                     <button class="btn btn-danger btn-sm" onclick="deleteLog('${l.id}')">
                       Delete
                     </button>
@@ -270,3 +270,4 @@
     </script>
   </body>
 </html>
+

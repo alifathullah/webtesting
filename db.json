@@ -24,7 +24,7 @@
     {
       "id": "UID-003",
       "username": "ara",
-      "password": "araaraara",
+      "password": "ara",
       "role": "user",
       "active": false
     },
@@ -1120,6 +1120,150 @@
       "targetId": "UID-001",
       "targetName": "admin(admin)",
       "date": "19/02/2026, 16.10.02"
+    },
+    {
+      "id": "LGT-190226-031",
+      "username": "admin",
+      "action": "Logout",
+      "targetId": "UID-001",
+      "targetName": "admin(admin)",
+      "date": "19/02/2026, 19.14.37"
+    },
+    {
+      "id": "LGN-190226-029",
+      "username": "admin",
+      "action": "Login",
+      "targetId": "UID-001",
+      "targetName": "admin(admin)",
+      "date": "19/02/2026, 19.14.41"
+    },
+    {
+      "id": "LGT-190226-032",
+      "username": "admin",
+      "action": "Logout",
+      "targetId": "UID-001",
+      "targetName": "admin(admin)",
+      "date": "19/02/2026, 19.19.23"
+    },
+    {
+      "id": "LGN-190226-030",
+      "username": "sarah",
+      "action": "Login",
+      "targetId": "UID-005",
+      "targetName": "sarah(user)",
+      "date": "19/02/2026, 19.19.28"
+    },
+    {
+      "id": "LGT-190226-033",
+      "username": "sarah",
+      "action": "Logout",
+      "targetId": "UID-005",
+      "targetName": "sarah(user)",
+      "date": "19/02/2026, 19.19.40"
+    },
+    {
+      "id": "LGN-190226-031",
+      "username": "admin",
+      "action": "Login",
+      "targetId": "UID-001",
+      "targetName": "admin(admin)",
+      "date": "19/02/2026, 19.20.01"
+    },
+    {
+      "id": "CPW-190226-003",
+      "username": "admin",
+      "action": "Change Password",
+      "targetId": "UID-003",
+      "targetName": "ara",
+      "date": "19/02/2026, 19.20.13"
+    },
+    {
+      "id": "LGT-190226-034",
+      "username": "admin",
+      "action": "Logout",
+      "targetId": "UID-001",
+      "targetName": "admin(admin)",
+      "date": "19/02/2026, 19.20.22"
+    },
+    {
+      "id": "LGN-190226-032",
+      "username": "admin",
+      "action": "Login",
+      "targetId": "UID-001",
+      "targetName": "admin(admin)",
+      "date": "19/02/2026, 19.23.09"
+    },
+    {
+      "id": "LGT-190226-035",
+      "username": "admin",
+      "action": "Logout",
+      "targetId": "UID-001",
+      "targetName": "admin(admin)",
+      "date": "19/02/2026, 19.23.14"
+    },
+    {
+      "id": "LGN-190226-033",
+      "username": "admin",
+      "action": "Login",
+      "targetId": "UID-001",
+      "targetName": "admin(admin)",
+      "date": "19/02/2026, 19.28.56"
+    },
+    {
+      "id": "LGT-190226-036",
+      "username": "admin",
+      "action": "Logout",
+      "targetId": "UID-001",
+      "targetName": "admin(admin)",
+      "date": "19/02/2026, 21.51.02"
+    },
+    {
+      "id": "LGN-190226-034",
+      "username": "admin",
+      "action": "Login",
+      "targetId": "UID-001",
+      "targetName": "admin(admin)",
+      "date": "19/02/2026, 21.51.08"
+    },
+    {
+      "id": "LGT-190226-037",
+      "username": "admin",
+      "action": "Logout",
+      "targetId": "UID-001",
+      "targetName": "admin(admin)",
+      "date": "19/02/2026, 21.53.02"
+    },
+    {
+      "id": "LGT-190226-038",
+      "username": "admin",
+      "action": "Logout",
+      "targetId": "UID-001",
+      "targetName": "admin(admin)",
+      "date": "19/02/2026, 21.58.17"
+    },
+    {
+      "id": "LGN-190226-035",
+      "username": "admin",
+      "action": "Login",
+      "targetId": "UID-001",
+      "targetName": "admin(admin)",
+      "date": "19/02/2026, 21.58.24"
+    },
+    {
+      "id": "ACT-190226-007",
+      "username": "admin",
+      "action": "Deactivate Account",
+      "targetId": "UID-004",
+      "targetName": "aa",
+      "date": "19/02/2026, 22.02.18"
+    },
+    {
+      "id": "ACT-190226-008",
+      "username": "admin",
+      "action": "Activate Account",
+      "targetId": "UID-004",
+      "targetName": "aa",
+      "date": "19/02/2026, 22.02.27"
     }
   ],
   "counters": {

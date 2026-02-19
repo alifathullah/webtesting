@@ -36,37 +36,31 @@
           </div>
 
           <div class="row g-3 mb-4">
-            <div class="col-md-4">
+            <div class="col-md-6">
               <div class="dashboard-stat">
                 <div class="dashboard-stat-label">Status</div>
                 <div class="dashboard-stat-value">Aktif</div>
               </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-6">
               <div class="dashboard-stat">
                 <div class="dashboard-stat-label">Akses</div>
                 <div class="dashboard-stat-value" id="roleBadge">User</div>
               </div>
             </div>
-            <div class="col-md-4">
-              <div class="dashboard-stat">
-                <div class="dashboard-stat-label">Environment</div>
-                <div class="dashboard-stat-value">Web Testing</div>
-              </div>
-            </div>
           </div>
 
-          <h6 class="mb-3">Menu Utama</h6>
+          <div id="adminSection" class="mt-4 d-none">
+            <h6 class="mb-3">Menu Admin</h6>
+            <div id="adminMenu" class="dashboard-menu dashboard-menu-inline"></div>
+          </div>
+
+          <h6 class="mt-4 mb-3">Menu Utama</h6>
           <div class="dashboard-menu" id="mainMenu">
             <a href="files.html" class="dashboard-menu-item">
               <div class="dashboard-menu-title">File Management</div>
               <div class="dashboard-menu-desc">Kelola file dokumen</div>
             </a>
-          </div>
-
-          <div id="adminSection" class="mt-4 d-none">
-            <h6 class="mb-3">Menu Admin</h6>
-            <div id="adminMenu" class="dashboard-menu"></div>
           </div>
         </div>
       </div>
@@ -180,3 +174,5 @@
     </script>
   </body>
 </html>
+
+
