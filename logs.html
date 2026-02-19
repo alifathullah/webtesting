@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+    >
+    <title>Log Activity</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    >
+    <link rel="stylesheet" href="style.css">
+    <style>
+    </style>
+  </head>
+  <body class="bg-light">
+    <div class="container mt-5">
+      <div class="card shadow">
+        <div class="card-header bg-white d-flex align-items-center justify-content-between">
+          <div class="d-flex align-items-center">
+            <a
+              href="dashboard.html"
+              class="text-dark me-2"
+              style="text-decoration:none; font-size:20px;"
+            >
+              <i class="bi bi-arrow-left"></i>
+            </a>
+            <h4 class="mb-0">Log Activity</h4>
+          </div>
+        </div>
+        <div class="card-body">
+          <div id="message" class="alert d-none mb-3" role="alert"></div>
+
+          <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
+            <div class="position-relative">
+              <input
+                type="text"
+                id="searchLog"
+                class="form-control w-auto pe-4"
+                placeholder="Search log..."
+                onkeyup="loadLogs()"
+                style="min-width: 240px;"
+              >
+              <button
+                type="button"
+                class="btn btn-sm btn-link text-muted position-absolute top-50 end-0 translate-middle-y me-2"
+                onclick="clearLogSearch()"
+                aria-label="Clear search"
+              >
+                <i class="bi bi-x-circle"></i>
+              </button>
+            </div>
+            <select id="logPrefix" class="form-select w-auto" onchange="loadLogs()">
+              <option value="">All Prefix</option>
+            </select>
+            <select id="logSort" class="form-select w-auto" onchange="loadLogs()">
+              <option value="desc">Newest</option>
+              <option value="asc">Oldest</option>
+            </select>
+          </div>
+
+          <div class="table-responsive">
+            <table class="table align-middle mt-3">
+              <thead class="table-header">
+              <tr>
+                <th>Log ID</th>
+                <th>User</th>
+                <th>Action</th>
+                <th>Target ID</th>
+                <th>Target Name</th>
+                <th>Date</th>
+                <th>Action</th>
+              </tr>
+              </thead>
+              <tbody id="logTable"></tbody>
+            </table>
+          </div>
+
+          <div class="d-flex align-items-center justify-content-between">
+            <div>
+              <button class="btn btn-outline-secondary btn-sm" onclick="prevPage()">
+                Prev
+              </button>
+              <button class="btn btn-outline-secondary btn-sm" onclick="nextPage()">
+                Next
+              </button>
+            </div>
+            <div class="text-muted" id="pageInfo"></div>
+            <div>
+              <select id="pageSize" class="form-select form-select-sm" onchange="setPageSize()">
+                <option value="10" selected>10 / page</option>
+                <option value="20">20 / page</option>
+                <option value="50">50 / page</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const user = JSON.parse(localStorage.getItem("user"));
+
+      // Admin Only
+      if (!user || user.role !== "admin") {
+        const msg = document.getElementById("message");
+        if (msg) {
+          msg.className = "alert alert-danger mb-3";
+          msg.innerText = "Access denied. Redirecting...";
+        }
+        setTimeout(() => {
+          window.location.href = "dashboard.html";
+        }, 800);
+      }
+
+      let currentPage = 1;
+      let pageSize = 10;
+
+      function showMessage(text, type = "success") {
+        const el = document.getElementById("message");
+        el.className = `alert alert-${type} mb-3`;
+        el.innerText = text;
+      }
+
+      function setPageSize() {
+        const value = parseInt(document.getElementById("pageSize").value, 10);
+        pageSize = Number.isFinite(value) ? value : 10;
+        currentPage = 1;
+        loadLogs();
+      }
+
+      function prevPage() {
+        if (currentPage > 1) {
+          currentPage -= 1;
+          loadLogs();
+        }
+      }
+
+      function nextPage() {
+        currentPage += 1;
+        loadLogs();
+      }
+
+      function parseDateString(value) {
+        if (!value) return new Date(0);
+
+        const [datePart, rawTimePart] = value.split(",");
+        if (!datePart || !rawTimePart) {
+          const fallback = new Date(value);
+          return isNaN(fallback.getTime()) ? new Date(0) : fallback;
+        }
+
+        const [day, month, year] = datePart
+          .trim()
+          .split("/")
+          .map(piece => piece.trim());
+
+        const timePart = rawTimePart
+          .trim()
+          .replace(/\./g, ":")
+          .replace(/(AM|PM)$/i, match => ` ${match}`);
+
+        const timeSegments = timePart.split(/[:\s]+/).filter(Boolean);
+        let hour = parseInt(timeSegments[0] || "0", 10);
+        const minute = parseInt(timeSegments[1] || "0", 10);
+        const second = parseInt(timeSegments[2] || "0", 10);
+        const ampmMatch = rawTimePart.trim().match(/(AM|PM)$/i);
+
+        if (ampmMatch) {
+          const ampm = ampmMatch[1].toUpperCase();
+          if (ampm === "PM" && hour < 12) hour += 12;
+          if (ampm === "AM" && hour === 12) hour = 0;
+        }
+
+        const yRaw = parseInt(year, 10);
+        const y = year && year.length === 2 ? 2000 + yRaw : yRaw;
+        const m = parseInt(month, 10) - 1;
+        const d = parseInt(day, 10);
+        const h = Number.isFinite(hour) ? hour : 0;
+        const min = Number.isFinite(minute) ? minute : 0;
+        const s = Number.isFinite(second) ? second : 0;
+
+        const parsed = new Date(y, m, d, h, min, s);
+        if (isNaN(parsed.getTime())) {
+          const fallback = new Date(value);
+          return isNaN(fallback.getTime()) ? new Date(0) : fallback;
+        }
+        return parsed;
+      }
+
+      /* =========================
+         LOAD LOGS
+      ========================= */
+      function loadLogs() {
+        const keyword =
+          document.getElementById("searchLog")?.value?.toLowerCase() || "";
+        const prefixFilter = document.getElementById("logPrefix")?.value || "";
+        const sortOrder = document.getElementById("logSort")?.value || "desc";
+
+        fetch("http://localhost:3000/logs")
+          .then(res => res.json())
+          .then(data => {
+            const table = document.getElementById("logTable");
+            table.innerHTML = "";
+
+            const prefixSelect = document.getElementById("logPrefix");
+            const existingValue = prefixSelect.value;
+            const prefixes = [...new Set(
+              data.map(l => (l.id || "").split("-")[0]).filter(p => p)
+            )].sort();
+
+            prefixSelect.innerHTML = '<option value="">All Prefix</option>';
+            prefixes.forEach(p => {
+              const opt = document.createElement("option");
+              opt.value = p;
+              opt.textContent = p;
+              prefixSelect.appendChild(opt);
+            });
+            prefixSelect.value = existingValue;
+
+            const ordered = [...data].sort((a, b) => {
+              const diff = parseDateString(a.date) - parseDateString(b.date);
+              return sortOrder === "asc" ? diff : -diff;
+            });
+            const filtered = ordered.filter(l => {
+              const logPrefix = (l.id || "").split("-")[0];
+              const rowText = (
+                l.id +
+                l.username +
+                l.action +
+                (l.targetId || "") +
+                (l.targetName || "") +
+                l.date
+              ).toLowerCase();
+
+              return rowText.includes(keyword) &&
+                (!prefixFilter || logPrefix === prefixFilter);
+            });
+
+            const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
+            if (currentPage > totalPages) currentPage = totalPages;
+
+            const start = (currentPage - 1) * pageSize;
+            const pageItems = filtered.slice(start, start + pageSize);
+
+            pageItems.forEach(l => {
+              table.innerHTML += `
+                <tr>
+                  <td>${l.id}</td>
+                  <td>${l.username}</td>
+                  <td>${l.action}</td>
+                  <td>${l.targetId || "-"}</td>
+                  <td>${l.targetName || "-"}</td>
+                  <td>${l.date}</td>
+                  <td>
+                    <button class="btn btn-danger btn-sm" onclick="deleteLog('${l.id}')">
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              `;
+            });
+
+            document.getElementById("pageInfo").innerText =
+              `Page ${currentPage} / ${totalPages} (${filtered.length} items)`;
+          })
+          .catch(() => {
+            showMessage("Gagal memuat data log", "danger");
+          });
+      }
+
+      function clearLogSearch() {
+        const input = document.getElementById("searchLog");
+        if (input) input.value = "";
+        const prefix = document.getElementById("logPrefix");
+        if (prefix) prefix.value = "";
+        currentPage = 1;
+        loadLogs();
+      }
+
+      /* =========================
+         DELETE LOG
+      ========================= */
+      async function deleteLog(id) {
+        const confirmDelete = confirm("Yakin hapus log ini?");
+        if (!confirmDelete) return;
+
+        await fetch(`http://localhost:3000/logs/${id}`, {
+          method: "DELETE"
+        });
+
+        showMessage("Log berhasil dihapus", "success");
+
+        loadLogs();
+      }
+
+      loadLogs();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+    >
+    <title>Admin - User Management</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    >
+    <link rel="stylesheet" href="style.css">
+    <style>
+      .btn-fixed {
+        min-width: 120px;
+        white-space: nowrap;
+      }
+    </style>
+  </head>
+  <body class="bg-light">
+    <div class="container mt-5">
+      <div class="card shadow">
+        <div class="card-header bg-white">
+          <div class="d-flex align-items-center">
+            <a
+              href="dashboard.html"
+              class="text-dark me-2"
+              style="text-decoration:none; font-size:20px;"
+            >
+              <i class="bi bi-arrow-left"></i>
+            </a>
+            <h4 class="mb-0">User Management</h4>
+          </div>
+        </div>
+        <div class="card-body">
+          <div id="message" class="alert d-none mb-3" role="alert"></div>
+
+          <div class="d-flex flex-wrap align-items-center justify-content-between mb-3">
+            <div class="d-flex flex-wrap align-items-center gap-2">
+              <div class="position-relative">
+                <input
+                  type="text"
+                  id="searchUser"
+                  class="form-control w-auto pe-4"
+                  placeholder="Search user..."
+                  onkeyup="loadUsers()"
+                  style="min-width: 240px;"
+                >
+                <button
+                  type="button"
+                  class="btn btn-sm btn-link text-muted position-absolute top-50 end-0 translate-middle-y me-2"
+                  onclick="clearUserSearch()"
+                  aria-label="Clear search"
+                >
+                  <i class="bi bi-x-circle"></i>
+                </button>
+              </div>
+              <select id="userSort" class="form-select form-select-sm w-auto" onchange="loadUsers()">
+                <option value="username">Sort: Username</option>
+                <option value="id">Sort: ID</option>
+                <option value="role">Sort: Role</option>
+              </select>
+              <button class="btn btn-outline-secondary btn-sm" onclick="toggleUserSort()">
+                <span id="userSortLabel">A-Z</span>
+              </button>
+            </div>
+            <button
+              class="btn btn-primary"
+              data-bs-toggle="modal"
+              data-bs-target="#addUserModal"
+            >
+              + Add User
+            </button>
+          </div>
+
+          <!-- TABLE -->
+          <div class="table-responsive">
+            <table class="table align-middle mt-3">
+            <thead class="table-header">
+              <tr>
+                <th>ID</th>
+                <th>Nama</th>
+                <th>Username</th>
+                <th>Role</th>
+                <th>Status</th>
+                <th class="text-center">Action</th>
+              </tr>
+            </thead>
+            <tbody id="userTable"></tbody>
+            </table>
+          </div>
+
+          <div class="d-flex align-items-center justify-content-between">
+            <div>
+              <button class="btn btn-outline-secondary btn-sm" onclick="prevPage()">
+                Prev
+              </button>
+              <button class="btn btn-outline-secondary btn-sm" onclick="nextPage()">
+                Next
+              </button>
+            </div>
+            <div class="text-muted" id="pageInfo"></div>
+            <div>
+              <select id="pageSize" class="form-select form-select-sm" onchange="setPageSize()">
+                <option value="5">5 / page</option>
+                <option value="10" selected>10 / page</option>
+                <option value="20">20 / page</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- =========================
+            MODAL ADD USER
+    ========================= -->
+    <div class="modal fade" id="addUserModal" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Add New User</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+            ></button>
+          </div>
+
+          <div class="modal-body">
+            <div class="mb-3">
+              <label>Username</label>
+              <input type="text" id="username" class="form-control">
+            </div>
+
+            <div class="mb-3">
+              <label>Password</label>
+              <input type="password" id="password" class="form-control">
+            </div>
+
+            <div class="mb-3">
+              <label>Role</label>
+              <select id="role" class="form-select">
+                <option value="user">User</option>
+                <option value="admin">Admin</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <button class="btn btn-secondary" data-bs-dismiss="modal">
+              Cancel
+            </button>
+            <button class="btn btn-primary" onclick="addUser()">Save</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- =========================
+            MODAL CHANGE PASSWORD
+    ========================= -->
+    <div class="modal fade" id="changePasswordModal" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Change Password</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+            ></button>
+          </div>
+
+          <div class="modal-body">
+            <input type="hidden" id="cpUserId">
+            <div class="mb-2 text-muted">
+              User: <span id="cpUsername"></span>
+            </div>
+            <div class="mb-3">
+              <label>Password Baru</label>
+              <input type="password" id="cpNewPassword" class="form-control">
+            </div>
+            <div class="mb-3">
+              <label>Konfirmasi Password</label>
+              <input
+                type="password"
+                id="cpConfirmPassword"
+                class="form-control"
+              >
+            </div>
+            <div id="cpError" class="text-danger"></div>
+          </div>
+
+          <div class="modal-footer">
+            <button class="btn btn-secondary" data-bs-dismiss="modal">
+              Cancel
+            </button>
+            <button class="btn btn-primary" onclick="savePassword()">
+              Save
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- =========================
+            MODAL CHANGE ROLE
+    ========================= -->
+    <div class="modal fade" id="changeRoleModal" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="crTitle">Make Admin</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+            ></button>
+          </div>
+
+          <div class="modal-body">
+            <input type="hidden" id="crUserId">
+            <input type="hidden" id="crTargetRole">
+            <div class="mb-2 text-muted">
+              User: <span id="crUsername"></span>
+            </div>
+            <div class="mb-3">
+              <label>Password Admin</label>
+              <input type="password" id="crAdminPassword" class="form-control">
+            </div>
+            <div id="crError" class="text-danger"></div>
+          </div>
+
+          <div class="modal-footer">
+            <button class="btn btn-secondary" data-bs-dismiss="modal">
+              Cancel
+            </button>
+            <button class="btn btn-primary" onclick="saveRole()">
+              Confirm
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+      const currentUser = JSON.parse(localStorage.getItem("user"));
+
+      // Proteksi hanya admin
+      if (!currentUser || currentUser.role !== "admin") {
+        showMessage("Access denied. Redirecting...", "danger");
+        setTimeout(() => {
+          window.location.href = "login.html";
+        }, 800);
+      }
+
+      let currentPage = 1;
+      let pageSize = 10;
+      let userSortOrder = "asc";
+
+      function showMessage(text, type = "success") {
+        const el = document.getElementById("message");
+        el.className = `alert alert-${type} mb-3`;
+        el.innerText = text;
+      }
+
+      function setPageSize() {
+        const value = parseInt(document.getElementById("pageSize").value, 10);
+        pageSize = Number.isFinite(value) ? value : 10;
+        currentPage = 1;
+        loadUsers();
+      }
+
+      function prevPage() {
+        if (currentPage > 1) {
+          currentPage -= 1;
+          loadUsers();
+        }
+      }
+
+      function nextPage() {
+        currentPage += 1;
+        loadUsers();
+      }
+
+      /* ======================
+         LOAD USERS
+      ====================== */
+      function loadUsers() {
+        fetch("http://localhost:3000/users")
+          .then(res => res.json())
+          .then(data => {
+            const table = document.getElementById("userTable");
+            table.innerHTML = "";
+
+            const keyword =
+              document.getElementById("searchUser")?.value?.toLowerCase() || "";
+            const filtered = data.filter(u => {
+              const rowText = (
+                (u.id || "") +
+                (u.name || "") +
+                (u.username || "") +
+                (u.role || "")
+              ).toLowerCase();
+              return rowText.includes(keyword);
+            });
+
+            const sortKey = document.getElementById("userSort")?.value || "username";
+            const sorted = [...filtered].sort((a, b) => {
+              const aVal = (a[sortKey] || "").toString();
+              const bVal = (b[sortKey] || "").toString();
+              const diff = aVal.localeCompare(bVal);
+              return userSortOrder === "asc" ? diff : -diff;
+            });
+
+            const totalPages = Math.max(1, Math.ceil(sorted.length / pageSize));
+            if (currentPage > totalPages) currentPage = totalPages;
+
+            const start = (currentPage - 1) * pageSize;
+            const pageItems = sorted.slice(start, start + pageSize);
+
+            pageItems.forEach(u => {
+              const isActive = u.active !== false;
+              const statusBadge = isActive
+                ? '<span class="badge text-bg-success">Active</span>'
+                : '<span class="badge text-bg-secondary">Inactive</span>';
+
+              const toggleLabel = isActive ? "Deactivate" : "Activate";
+              const toggleClass = isActive
+                ? "btn-outline-danger"
+                : "btn-outline-success";
+              const roleButton = u.role !== "admin"
+                ? `
+                  <button class="btn btn-outline-primary btn-sm btn-fixed me-1" onclick="openRoleModal('${u.id}', '${u.username}', 'admin')">
+                    Make Admin
+                  </button>
+                `
+                : `
+                  <button class="btn btn-outline-secondary btn-sm btn-fixed me-1" onclick="openRoleModal('${u.id}', '${u.username}', 'user')">
+                    Demote to User
+                  </button>
+                `;
+
+              table.innerHTML += `
+                <tr>
+                  <td>${u.id}</td>
+                  <td>${u.name || "-"}</td>
+                  <td>${u.username}</td>
+                  <td>${u.role}</td>
+                  <td>${statusBadge}</td>
+                  <td class="text-end">
+                    ${roleButton}
+                    <button class="btn btn-warning btn-sm btn-fixed me-1" onclick="openPasswordModal('${u.id}', '${u.username}')">
+                      Change Password
+                    </button>
+                    <button class="btn ${toggleClass} btn-sm btn-fixed me-1" onclick="toggleActive('${u.id}', ${isActive}, '${u.username}')">
+                      ${toggleLabel}
+                    </button>
+                    <button class="btn btn-danger btn-sm btn-fixed" onclick="deleteUser('${u.id}')">
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              `;
+            });
+
+            document.getElementById("pageInfo").innerText =
+              `Page ${currentPage} / ${totalPages} (${sorted.length} items)`;
+          })
+          .catch(() => {
+            showMessage("Gagal memuat data user", "danger");
+          });
+      }
+
+      function clearUserSearch() {
+        const input = document.getElementById("searchUser");
+        if (input) input.value = "";
+        currentPage = 1;
+        loadUsers();
+      }
+
+      function toggleUserSort() {
+        userSortOrder = userSortOrder === "asc" ? "desc" : "asc";
+        document.getElementById("userSortLabel").innerText =
+          userSortOrder === "asc" ? "A-Z" : "Z-A";
+        loadUsers();
+      }
+
+      /* ======================
+         GENERATE UID SEQUENTIAL
+      ====================== */
+      async function generateUID() {
+        const res = await fetch("http://localhost:3000/users");
+        const users = await res.json();
+
+        if (users.length === 0) return "UID-001";
+
+        const numbers = users.map(u => {
+          const parts = u.id.split("-");
+          return parseInt(parts[1]);
+        });
+
+        const maxNumber = Math.max(...numbers);
+        const nextNumber = String(maxNumber + 1).padStart(3, "0");
+
+        return "UID-" + nextNumber;
+      }
+
+      /* ======================
+         ADD USER
+      ====================== */
+      async function addUser() {
+        const username = document.getElementById("username").value.trim();
+        const password = document.getElementById("password").value.trim();
+        const role = document.getElementById("role").value;
+
+        if (!username || !password) {
+          showMessage("Semua field wajib diisi!", "danger");
+          return;
+        }
+
+        const res = await fetch("http://localhost:3000/users");
+        const users = await res.json();
+
+        const exists = users.find(u => u.username === username);
+        if (exists) {
+          showMessage("Username sudah digunakan!", "danger");
+          return;
+        }
+
+        const newId = await generateUID();
+
+        await fetch("http://localhost:3000/users", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            id: newId,
+            username,
+            password,
+            role
+          })
+        });
+
+        await addLog(
+          "USR",
+          "Add User",
+          currentUser.username,
+          newId,
+          username
+        );
+
+        showMessage("User berhasil ditambahkan!", "success");
+
+        // Reset form
+        document.getElementById("username").value = "";
+        document.getElementById("password").value = "";
+
+        // Close modal
+        const modal = bootstrap.Modal.getInstance(
+          document.getElementById("addUserModal")
+        );
+        modal.hide();
+
+        loadUsers();
+      }
+
+      /* ======================
+         DELETE USER
+      ====================== */
+      function deleteUser(id) {
+        if (id === currentUser.id) {
+          showMessage("Tidak bisa menghapus akun sendiri!", "danger");
+          return;
+        }
+
+        if (!confirm("Yakin mau hapus user ini?")) return;
+
+        fetch(`http://localhost:3000/users/${id}`)
+          .then(res => res.json())
+          .then(user => {
+            return fetch(`http://localhost:3000/users/${id}`, {
+              method: "DELETE"
+            }).then(async () => {
+              await addLog(
+                "USR",
+                "Delete User",
+                currentUser.username,
+                id,
+                user?.username || "-"
+              );
+              showMessage("User berhasil dihapus", "success");
+              loadUsers();
+            });
+          });
+      }
+
+      /* ======================
+         TOGGLE ACTIVE
+      ====================== */
+      async function toggleActive(id, isActive, targetName = "-") {
+        if (id === currentUser.id) {
+          showMessage("Tidak bisa menonaktifkan akun sendiri!", "danger");
+          return;
+        }
+
+        const label = isActive ? "nonaktifkan" : "aktifkan";
+        if (!confirm(`Yakin mau ${label} user ini?`)) return;
+
+        await fetch(`http://localhost:3000/users/${id}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ active: !isActive })
+        });
+
+        await addLog(
+          "ACT",
+          isActive ? "Deactivate Account" : "Activate Account",
+          currentUser.username,
+          id,
+          targetName
+        );
+
+        showMessage(
+          isActive ? "User berhasil dinonaktifkan" : "User berhasil diaktifkan",
+          "success"
+        );
+
+        loadUsers();
+      }
+
+      /* ======================
+         CHANGE PASSWORD (ADMIN)
+      ====================== */
+      function openPasswordModal(id, username) {
+        document.getElementById("cpUserId").value = id;
+        document.getElementById("cpUsername").innerText = username;
+        document.getElementById("cpNewPassword").value = "";
+        document.getElementById("cpConfirmPassword").value = "";
+        document.getElementById("cpError").innerText = "";
+
+        const modal = new bootstrap.Modal(
+          document.getElementById("changePasswordModal")
+        );
+        modal.show();
+      }
+
+      async function savePassword() {
+        const id = document.getElementById("cpUserId").value;
+        const newPassword = document.getElementById("cpNewPassword").value.trim();
+        const confirmPassword = document.getElementById("cpConfirmPassword").value.trim();
+        const errorDiv = document.getElementById("cpError");
+
+        errorDiv.innerText = "";
+
+        if (!newPassword || !confirmPassword) {
+          errorDiv.innerText = "Semua field wajib diisi";
+          return;
+        }
+
+        if (newPassword !== confirmPassword) {
+          errorDiv.innerText = "Password tidak sama";
+          return;
+        }
+
+        await fetch(`http://localhost:3000/users/${id}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ password: newPassword })
+        });
+
+        await addLog(
+          "CPW",
+          "Change Password",
+          currentUser.username,
+          id,
+          document.getElementById("cpUsername").innerText
+        );
+
+        const modal = bootstrap.Modal.getInstance(
+          document.getElementById("changePasswordModal")
+        );
+        modal.hide();
+
+        showMessage("Password berhasil diubah", "success");
+      }
+
+      /* ======================
+         CHANGE ROLE (ADMIN)
+      ====================== */
+      function openRoleModal(id, username, targetRole) {
+        document.getElementById("crUserId").value = id;
+        document.getElementById("crUsername").innerText = username;
+        document.getElementById("crTargetRole").value = targetRole;
+        document.getElementById("crTitle").innerText =
+          targetRole === "admin" ? "Make Admin" : "Demote to User";
+        document.getElementById("crAdminPassword").value = "";
+        document.getElementById("crError").innerText = "";
+
+        const modal = new bootstrap.Modal(
+          document.getElementById("changeRoleModal")
+        );
+        modal.show();
+      }
+
+      async function saveRole() {
+        const id = document.getElementById("crUserId").value;
+        const targetRole = document.getElementById("crTargetRole").value;
+        const adminPassword = document.getElementById("crAdminPassword").value.trim();
+        const errorDiv = document.getElementById("crError");
+
+        errorDiv.innerText = "";
+
+        if (id === currentUser.id) {
+          errorDiv.innerText = "Tidak bisa mengubah role akun sendiri";
+          return;
+        }
+
+        if (!adminPassword) {
+          errorDiv.innerText = "Password admin wajib diisi";
+          return;
+        }
+
+        if (adminPassword !== currentUser.password) {
+          errorDiv.innerText = "Password admin salah";
+          return;
+        }
+
+        if (targetRole === "user") {
+          const targetRes = await fetch(`http://localhost:3000/users/${id}`);
+          const targetUser = await targetRes.json();
+
+          const usersRes = await fetch("http://localhost:3000/users");
+          const users = await usersRes.json();
+          const adminCount = users.filter(u => u.role === "admin").length;
+
+          if (targetUser?.role === "admin" && adminCount <= 1) {
+            errorDiv.innerText = "Tidak bisa menurunkan role admin terakhir";
+            return;
+          }
+        }
+
+        await fetch(`http://localhost:3000/users/${id}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ role: targetRole })
+        });
+
+        await addLog(
+          "USR",
+          targetRole === "admin" ? "Make Admin" : "Demote to User",
+          currentUser.username,
+          id,
+          document.getElementById("crUsername").innerText
+        );
+
+        const modal = bootstrap.Modal.getInstance(
+          document.getElementById("changeRoleModal")
+        );
+        modal.hide();
+
+        showMessage(
+          targetRole === "admin"
+            ? "Role user berhasil diubah menjadi admin"
+            : "Role user berhasil diubah menjadi user",
+          "success"
+        );
+        loadUsers();
+      }
+
+      async function addLog(prefix, action, username, targetId = "-", targetName = "-") {
+        const now = new Date();
+
+        const day = String(now.getDate()).padStart(2, "0");
+        const month = String(now.getMonth() + 1).padStart(2, "0");
+        const year = String(now.getFullYear()).slice(-2);
+
+        const datePrefix = day + month + year;
+
+        const response = await fetch("http://localhost:3000/logs");
+        const data = await response.json();
+
+        const todayLogs = data.filter(
+          log =>
+            log?.id &&
+            log.id.startsWith(prefix + "-" + datePrefix)
+        );
+
+        let maxNumber = 0;
+        todayLogs.forEach(log => {
+          const parts = (log.id || "").split("-");
+          const number = parseInt(parts[2], 10) || 0;
+          if (number > maxNumber) {
+            maxNumber = number;
+          }
+        });
+
+        const nextNumber = String(maxNumber + 1).padStart(3, "0");
+        const newId = prefix + "-" + datePrefix + "-" + nextNumber;
+
+        await fetch("http://localhost:3000/logs", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            id: newId,
+            username: username,
+            action: action,
+            targetId: targetId,
+            targetName: targetName,
+            date: now.toLocaleString()
+          })
+        });
+      }
+
+      loadUsers();
+    </script>
+  </body>
+</html>
