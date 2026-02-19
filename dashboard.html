@@ -159,7 +159,16 @@
             log.id.startsWith(prefix + "-" + datePrefix)
         );
 
-        const nextNumber = String(todayLogs.length + 1).padStart(3, "0");
+        let maxNumber = 0;
+        todayLogs.forEach(log => {
+          const parts = (log.id || "").split("-");
+          const number = parseInt(parts[2], 10) || 0;
+          if (number > maxNumber) {
+            maxNumber = number;
+          }
+        });
+
+        const nextNumber = String(maxNumber + 1).padStart(3, "0");
         const newId = prefix + "-" + datePrefix + "-" + nextNumber;
 
         await fetch("http://localhost:3000/logs", {

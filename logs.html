@@ -145,19 +145,29 @@
       function parseDateString(value) {
         if (!value) return new Date(0);
         const [datePart, timePart] = value.split(",");
-        if (!datePart || !timePart) return new Date(0);
+        if (!datePart || !timePart) {
+          const parsed = new Date(value);
+          return isNaN(parsed.getTime()) ? new Date(0) : parsed;
+        }
 
         const [day, month, year] = datePart.trim().split("/");
-        const [hour, minute, second] = timePart.trim().split(".");
+        const timeSegments = timePart.trim().replace(/\./g, ":").split(":");
+        const [hour, minute, second] = [
+          timeSegments[0] || "0",
+          timeSegments[1] || "0",
+          timeSegments[2] || "0"
+        ];
 
-        const y = parseInt(year, 10);
+        const yRaw = parseInt(year, 10);
+        const y = year && year.length === 2 ? 2000 + yRaw : yRaw;
         const m = parseInt(month, 10) - 1;
         const d = parseInt(day, 10);
-        const h = parseInt(hour, 10);
-        const min = parseInt(minute, 10);
-        const s = parseInt(second, 10);
+        const h = parseInt(hour, 10) || 0;
+        const min = parseInt(minute, 10) || 0;
+        const s = parseInt(second, 10) || 0;
 
-        return new Date(y, m, d, h, min, s);
+        const parsed = new Date(y, m, d, h, min, s);
+        return isNaN(parsed.getTime()) ? new Date(0) : parsed;
       }
 
       /* =========================

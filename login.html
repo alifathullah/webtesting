@@ -44,7 +44,7 @@
     </div>
 
     <script>
-      function addLog(prefix, action) {
+      async function addLog(prefix, action) {
         const user = JSON.parse(localStorage.getItem("user"));
         const now = new Date();
 
@@ -54,59 +54,65 @@
 
         const datePrefix = day + month + year;
 
-        fetch("http://localhost:3000/logs")
-          .then(res => res.json())
-          .then(data => {
-            const todayLogs = data.filter(
-              log =>
-                log.id &&
-                log.id.startsWith(prefix + "-" + datePrefix)
-            );
+        const res = await fetch("http://localhost:3000/logs");
+        const data = await res.json();
+        const todayLogs = data.filter(
+          log =>
+            log.id &&
+            log.id.startsWith(prefix + "-" + datePrefix)
+        );
 
-            const nextNumber = String(todayLogs.length + 1).padStart(3, "0");
-            const newId = prefix + "-" + datePrefix + "-" + nextNumber;
+        let maxNumber = 0;
+        todayLogs.forEach(log => {
+          const parts = (log.id || "").split("-");
+          const number = parseInt(parts[2], 10) || 0;
+          if (number > maxNumber) {
+            maxNumber = number;
+          }
+        });
 
-            fetch("http://localhost:3000/logs", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                id: newId,
-                username: user.username,
-                action: action,
-                targetId: user.id,
-                targetName: `${user.username}(${user.role})`,
-                date: now.toLocaleString()
-              })
-            });
-          });
+        const nextNumber = String(maxNumber + 1).padStart(3, "0");
+        const newId = prefix + "-" + datePrefix + "-" + nextNumber;
+
+        await fetch("http://localhost:3000/logs", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            id: newId,
+            username: user.username,
+            action: action,
+            targetId: user.id,
+            targetName: `${user.username}(${user.role})`,
+            date: now.toLocaleString()
+          })
+        });
       }
 
-      function login() {
+      async function login() {
         const username = document.getElementById("username").value;
         const password = document.getElementById("password").value;
 
-        fetch(
+        const res = await fetch(
           `http://localhost:3000/users?username=${username}&password=${password}`
-        )
-          .then(res => res.json())
-          .then(data => {
-            if (data.length > 0) {
-              const user = data[0];
+        );
+        const data = await res.json();
 
-              if (user.active === false) {
-                document.getElementById("error").innerText =
-                  "Akun dinonaktifkan. Hubungi admin.";
-                return;
-              }
+        if (data.length > 0) {
+          const user = data[0];
 
-              localStorage.setItem("user", JSON.stringify(user));
-              addLog("LGN", "Login");
-              window.location.href = "dashboard.html";
-            } else {
-              document.getElementById("error").innerText =
-                "Username atau password salah";
-            }
-          });
+          if (user.active === false) {
+            document.getElementById("error").innerText =
+              "Akun dinonaktifkan. Hubungi admin.";
+            return;
+          }
+
+          localStorage.setItem("user", JSON.stringify(user));
+          await addLog("LGN", "Login");
+          window.location.href = "dashboard.html";
+        } else {
+          document.getElementById("error").innerText =
+            "Username atau password salah";
+        }
       }
     </script>
   </body>

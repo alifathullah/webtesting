@@ -286,7 +286,7 @@
         changePasswordModal.show();
       }
 
-      async function savePhotoData() {
+      async function savePhotoData(action = "Update Photo") {
         try {
           await fetch(`http://localhost:3000/users/${user.id}`, {
             method: "PATCH",
@@ -301,6 +301,13 @@
         }
 
         localStorage.setItem("user", JSON.stringify(user));
+        await addLog(
+          "PRF",
+          action,
+          user.username,
+          user.id,
+          user.username
+        );
         showMessage("Foto profil berhasil diperbarui", "success");
       }
 
@@ -323,7 +330,7 @@
         reader.onload = async () => {
           user.photoData = reader.result;
           setPreview(user.photoData);
-          await savePhotoData();
+          await savePhotoData("Update Photo");
         };
         reader.readAsDataURL(file);
       }
@@ -331,7 +338,7 @@
       async function removePhoto() {
         user.photoData = "";
         setPreview("");
-        await savePhotoData();
+        await savePhotoData("Remove Photo");
       }
 
       async function saveProfile(event) {
@@ -374,6 +381,13 @@
         user.email = email;
         user.phone = phone;
         localStorage.setItem("user", JSON.stringify(user));
+        await addLog(
+          "PRF",
+          "Update Profile",
+          user.username,
+          user.id,
+          user.username
+        );
 
         showMessage("Profile berhasil diperbarui", "success");
         fillForm();
@@ -398,7 +412,16 @@
             log.id.startsWith(prefix + "-" + datePrefix)
         );
 
-        const nextNumber = String(todayLogs.length + 1).padStart(3, "0");
+        let maxNumber = 0;
+        todayLogs.forEach(log => {
+          const parts = (log.id || "").split("-");
+          const number = parseInt(parts[2], 10) || 0;
+          if (number > maxNumber) {
+            maxNumber = number;
+          }
+        });
+
+        const nextNumber = String(maxNumber + 1).padStart(3, "0");
         const newId = prefix + "-" + datePrefix + "-" + nextNumber;
 
         await fetch("http://localhost:3000/logs", {
