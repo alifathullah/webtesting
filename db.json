@@ -195,6 +195,18 @@
       "username": "admin",
       "action": "Login",
       "date": "12/02/2026, 00.04.50"
+    },
+    {
+      "id": "LGT-190226-001",
+      "username": "admin",
+      "action": "Logout",
+      "date": "19/02/2026, 12.15.10"
+    },
+    {
+      "id": "LGN-190226-001",
+      "username": "admin",
+      "action": "Login",
+      "date": "19/02/2026, 12.15.17"
     }
   ]
 }
