@@ -9,11 +9,11 @@ Menyiapkan server ringan berbasis Node.js supaya semua file HTML/CSS di folder i
    npm install
    ```
    Setelah install, jalankan `npm run check-deps` untuk memastikan dependency (express + cors) tersedia sebelum deploy.
-2. **Jalankan server**
+2. **Jalankan server API**
    ```bash
    npm start
    ```
-   Server akan berjalan di `http://localhost:3000` secara default.
+   Ini menjalankan `json-server` lewat `server.js`, sehingga endpoint `/users`, `/logs`, `/files`, dll. bisa diakses dari GitHub Pages.
 3. **Ubah port (opsional)**
    ```bash
    PORT=5000 npm start

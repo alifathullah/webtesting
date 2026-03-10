@@ -1,20 +1,18 @@
-const express = require('express');
-const path = require('path');
-const cors = require('cors');
+const cors = require("cors");
+const jsonServer = require("json-server");
+const path = require("path");
 
-const app = express();
+const app = jsonServer.create();
+const router = jsonServer.router(path.join(__dirname, "db.json"));
+const middlewares = jsonServer.defaults({
+  static: false,
+});
 const PORT = process.env.PORT || 3000;
-const root = path.resolve(__dirname);
 
 app.use(cors());
-
-// Layani file statis apa pun di folder ini
-app.use(express.static(root));
-
-// Tambahkan fallback supaya navigasi SPA tetap mengirimkan halaman awal
-app.get('*', (req, res) => {
-  res.sendFile(path.join(root, 'login.html'));
-});
+app.use(middlewares);
+app.use(jsonServer.bodyParser);
+app.use(router);
 
 app.listen(PORT, () => {
   console.log(`Server berjalan di http://localhost:${PORT}/`);
