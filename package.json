@@ -5,7 +5,8 @@
   "description": "Static mini DMS kit with a lightweight express host",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "check-deps": "node scripts/check-deps.js"
   },
   "engines": {
     "node": ">=18"

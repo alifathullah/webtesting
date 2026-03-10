@@ -8,6 +8,7 @@ Menyiapkan server ringan berbasis Node.js supaya semua file HTML/CSS di folder i
    ```bash
    npm install
    ```
+   Setelah install, jalankan `npm run check-deps` untuk memastikan dependency (express + cors) tersedia sebelum deploy.
 2. **Jalankan server**
    ```bash
    npm start
