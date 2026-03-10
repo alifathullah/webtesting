@@ -1264,6 +1264,14 @@
       "targetId": "UID-004",
       "targetName": "aa",
       "date": "19/02/2026, 22.02.27"
+    },
+    {
+      "id": "LGN-200226-001",
+      "username": "admin",
+      "action": "Login",
+      "targetId": "UID-001",
+      "targetName": "admin(admin)",
+      "date": "20/02/2026, 02.08.40"
     }
   ],
   "counters": {
