@@ -1,4 +1,4 @@
-const PROD_API_HOST = "https://mini-dms.onrender.com"; // ganti dengan URL backend publikmu
+const PROD_API_HOST = "https://webtesting-production.up.railway.app"; // ganti dengan URL backend publikmu
 const LOCAL_API_HOST = "http://localhost:3000";
 
 const API_BASE =
